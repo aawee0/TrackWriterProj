@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.example.aawee.trackwriter.MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press REC to start recording"
+        android:id="@+id/textView"
+        android:textSize="24sp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/track_list"
+        android:layout_above="@+id/tableButtons"
+        android:layout_below="@+id/textView"
+        android:layout_marginTop="5pt">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:id="@+id/tableButtons">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+        <ImageButton
+            android:src="@drawable/rec"
+            android:background="@android:color/transparent"
+            android:onClick="startRec"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/recButton"
+            android:layout_marginRight="20pt"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+             />
+
+            <ImageButton
+                android:src="@drawable/stop"
+                android:background="@android:color/transparent"
+                android:onClick="stopRec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/stopButton"
+                android:layout_alignTop="@+id/recButton"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true" />
+        </TableRow>
+    </TableLayout>
+
+</RelativeLayout>
