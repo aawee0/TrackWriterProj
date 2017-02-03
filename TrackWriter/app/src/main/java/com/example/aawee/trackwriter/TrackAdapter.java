@@ -1,14 +1,17 @@
 package com.example.aawee.trackwriter;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.example.aawee.trackwriter.data.TrackContract;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Aawee on 1/02/2017.
@@ -16,13 +19,21 @@ import java.util.List;
 
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder> {
 
-    private int mNumberItems;
-    private List<String> mDataSet;
+    //private List<String> mDataSet;
 
-    public TrackAdapter(int numberOfItems, List<String> itemNames) {
-        mNumberItems=numberOfItems;
-        if(itemNames==null) mDataSet = new ArrayList<String>();
-        else mDataSet=itemNames;
+    private Context mContext;
+    private Cursor mCursor;
+
+    final private ListItemClickListener mOnClickListener;
+
+    public TrackAdapter(Context context, Cursor cursor, ListItemClickListener listener) {
+        mContext = context;
+        mCursor = cursor;
+
+        mOnClickListener = listener;
+
+        //if(itemNames==null) mDataSet = new ArrayList<String>();
+        //else mDataSet=itemNames;
     }
 
     @Override
@@ -41,31 +52,47 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
 
     @Override
     public void onBindViewHolder(TrackViewHolder holder, int position) {
-        holder.bind(position);
+        if(!mCursor.moveToPosition(position)) return;
+
+        String name = mCursor.getString(mCursor.getColumnIndex(TrackContract.GpsTrackEntry.TRACK_NAME_NAME));
+        Date date = new Date(mCursor.getLong(mCursor.getColumnIndex(TrackContract.GpsTrackEntry.CREATION_TIME_NAME)));
+
+        holder.listItemView.setText(name);
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        //System.out.println(dateFormat.format(date));
+
+        holder.listTimeView.setText(dateFormat.format(date));
     }
 
 
     @Override
     public int getItemCount() {
-        return mNumberItems;
+        return mCursor.getCount();
     }
 
-    public void addItem (String newItemName) {
-        mDataSet.add(newItemName);
-        mNumberItems++;
-        notifyItemInserted(mDataSet.size()-1);
+    public interface ListItemClickListener {
+        void onListItemClick(int clickedItemIndex);
+
     }
 
-    class TrackViewHolder extends RecyclerView.ViewHolder {
+    class TrackViewHolder extends RecyclerView.ViewHolder
+    implements View.OnClickListener{
         TextView listItemView;
+        TextView listTimeView;
 
         public TrackViewHolder(View itemView) {
             super(itemView);
-            listItemView = (TextView) itemView.findViewById(R.id.track_number);
+            listItemView = (TextView) itemView.findViewById(R.id.track_name);
+            listTimeView = (TextView) itemView.findViewById(R.id.track_time);
+            itemView.setOnClickListener(this);
         }
 
-        void bind (int listIndex) {
-            listItemView.setText(mDataSet.get(listIndex));
+        @Override
+        public void onClick(View view) {
+            int clickedPosition = getAdapterPosition();
+            mOnClickListener.onListItemClick(clickedPosition);
         }
     }
 }

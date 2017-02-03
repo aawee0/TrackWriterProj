@@ -26,7 +26,7 @@ public class testUtil {
 
         // one more
         ContentValues cv2 = new ContentValues();
-        cv2.put(TrackContract.GpsTrackEntry.TRACK_NAME_NAME, "Test track");
+        cv2.put(TrackContract.GpsTrackEntry.TRACK_NAME_NAME, "Empty track");
         cv2.put(TrackContract.GpsTrackEntry.CREATION_TIME_NAME, (new java.util.Date().getTime()));
 
         try {
@@ -53,7 +53,7 @@ public class testUtil {
         cv.put(TrackContract.GpsPointEntry.TRACK_ID_NAME, trackID);
         //java.sql.Timestamp date = new java.sql.Timestamp (new java.util.Date().getTime());
         cv.put(TrackContract.GpsPointEntry.CREATION_TIME_NAME, (new java.util.Date().getTime()));
-        cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, -170);
+        cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, -30);
         cv.put(TrackContract.GpsPointEntry.LONGITUDE_NAME, 20);
         list.add(cv);
 
@@ -61,7 +61,7 @@ public class testUtil {
         cv.put(TrackContract.GpsPointEntry.TRACK_ID_NAME, trackID);
         //java.sql.Timestamp date = new java.sql.Timestamp (new java.util.Date().getTime());
         cv.put(TrackContract.GpsPointEntry.CREATION_TIME_NAME, (new java.util.Date().getTime()));
-        cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, -160);
+        cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, 0);
         cv.put(TrackContract.GpsPointEntry.LONGITUDE_NAME, 30);
         list.add(cv);
 
@@ -69,7 +69,7 @@ public class testUtil {
         cv.put(TrackContract.GpsPointEntry.TRACK_ID_NAME, trackID);
         //java.sql.Timestamp date = new java.sql.Timestamp (new java.util.Date().getTime());
         cv.put(TrackContract.GpsPointEntry.CREATION_TIME_NAME, (new java.util.Date().getTime()));
-        cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, -180);
+        cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, -10);
         cv.put(TrackContract.GpsPointEntry.LONGITUDE_NAME, 40);
         list.add(cv);
 

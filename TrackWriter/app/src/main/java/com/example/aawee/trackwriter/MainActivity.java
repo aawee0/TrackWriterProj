@@ -16,7 +16,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -25,7 +24,7 @@ import com.example.aawee.trackwriter.data.TrackContract;
 import com.example.aawee.trackwriter.data.TrackDbHelper;
 import com.example.aawee.trackwriter.data.testUtil;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TrackAdapter.ListItemClickListener {
 
     // interface elements
     private ImageButton recBtn; // record button
@@ -43,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     // database-related
     private SQLiteDatabase mainDB;
+    Cursor cursTr;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +61,7 @@ public class MainActivity extends AppCompatActivity {
         mTrackList = (RecyclerView) findViewById(R.id.track_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mTrackList.setLayoutManager(layoutManager);
-        //mTrackList.setHasFixedSize(true);
-        //List<String> strs = new ArrayList<String>(){{add("One String"); add("Two String"); add("Three String"); add("Four String"); }};
-        mAdapter = new TrackAdapter(0,null);
-        mTrackList.setAdapter(mAdapter);
+
 
         // location-related
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
                 if (recStarted) curTrack.addPoint( new GpsPoint(location.getLatitude(),location.getLongitude()) );
 
-                txtChg.setText("");
+                txtChg.setText(""); // change this text later
                 for (int i=0; i< curTrack.size(); i++ ) {
                     txtChg.append("(" + curTrack.getPoint(i).getLatitude() + " , " + curTrack.getPoint(i).getLongitude() + "), \n");
                 }
@@ -95,57 +93,30 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        // MAKE TRACK RECORDING WORK, THEN UNCOMMENT
         //configure();
 
         // database-related
         TrackDbHelper dbHelper = new TrackDbHelper(this);
         mainDB = dbHelper.getWritableDatabase();
+
         testUtil.insertFakeData(mainDB);
 
         //take out TRACK
 
-        Cursor cursTr = getTracks();
+        cursTr = getTracks();
         long testTrackID=1;
         String trackName = new String();
-        while (cursTr.moveToNext()) {
-            testTrackID = cursTr.getLong(cursTr.getColumnIndexOrThrow(TrackContract.GpsTrackEntry._ID));
-            trackName = cursTr.getString(cursTr.getColumnIndexOrThrow(TrackContract.GpsTrackEntry.TRACK_NAME_NAME));
-            mAdapter.addItem(trackName);
-            Log.d("Debug", "Item name: " + trackName );
-            //txtChg.setText("Track ID: " + Long.toString(testTrackID) + ". \n \n");
-        }
-        mAdapter.notifyDataSetChanged();
 
-
-        Cursor cursPt = getPoints(testTrackID);
-        long testDat;
-        double testLat;
-        double testLon;
-        long testPtId;
-        while (cursPt.moveToNext()) {
-            //testTrackID = cursPt.getInt(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.TRACK_ID_NAME));
-
-            testPtId = cursPt.getLong(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry._ID));
-            testDat = cursPt.getLong(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.CREATION_TIME_NAME));
-            testLat = Double.parseDouble(cursPt.getString(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.LATITUDE_NAME)));
-            testLon = Double.parseDouble(cursPt.getString(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.LONGITUDE_NAME)));
-
-            txtChg.append(
-                    "\nPoint: " + Long.toString(testPtId) +
-                    //"\nTime: " + Long.toString(testDat) +
-                    "\nLatitude: " + Double.toString(testLat) +
-                    "\nLongitude: " + Double.toString(testLon) + ". \n");
-
-
-        }
-
-
+        mAdapter = new TrackAdapter(this, cursTr, this);
+        mTrackList.setAdapter(mAdapter);
 
     }
 
 
     void configure(){
         // check if permission is granted, otherwise request it
+        // UNCOMMENT IN onCreate TO RECEIVE GPS COORDINATES
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -162,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode){
             case 10:
-                // when permission is granted -- run "configure" again
+                // when permission is granted -- run "configure" function again
                 if (grantResults.length>0 && grantResults[0]==PackageManager.PERMISSION_GRANTED) {
                     configure();
                 }
@@ -174,24 +145,35 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void startRec(View view) {
+        // action for the record button
         recStarted = true;
     }
 
     public void stopRec(View view) {
+        // action for the stop button
         recStarted = false;
     }
 
-
-    private Cursor getPoints (long track) {
-        return mainDB.query(TrackContract.GpsPointEntry.TABLE_NAME, null,
-                TrackContract.GpsPointEntry.TRACK_ID_NAME + "=" + Long.toString(track), null, null, null,
-                TrackContract.GpsPointEntry._ID);
-    }
-
     private Cursor getTracks () {
+        // get all tracks from the database for displaying list
         return mainDB.query(TrackContract.GpsTrackEntry.TABLE_NAME, null, null, null, null, null,
                 TrackContract.GpsTrackEntry._ID);
     }
 
 
+    @Override
+    public void onListItemClick(int clickedItemIndex) {
+
+        // get current track information
+        cursTr.moveToPosition(clickedItemIndex);
+        long testTrackID = cursTr.getLong(cursTr.getColumnIndexOrThrow(TrackContract.GpsTrackEntry._ID));
+        String trackName = cursTr.getString(cursTr.getColumnIndexOrThrow(TrackContract.GpsTrackEntry.TRACK_NAME_NAME));
+
+        // create an intent for a screen with map
+        Intent mapIntent = new Intent(MainActivity.this, MapActivity.class);
+        mapIntent.putExtra(Intent.EXTRA_TEXT, trackName);
+        mapIntent.putExtra("id_value_long", testTrackID);
+
+        startActivity(mapIntent);
+    }
 }
