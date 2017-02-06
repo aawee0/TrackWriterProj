@@ -18,12 +18,11 @@ public class GpsPoint {
         // timeCreated = new Date();
     }
 
-    public GpsPoint(double lat, double lon, long date, long id) {
+    public GpsPoint(double lat, double lon, long date) {
         latitude = lat;
         longitude = lon;
 
         timeCreated = date;
-        dbID = id;
     }
 
     public double getLatitude () {
@@ -33,4 +32,8 @@ public class GpsPoint {
     public double getLongitude () {
         return longitude;
     }
+
+    public long getTimeCreated () { return timeCreated; }
+
+    public void setDbID (long id) {dbID = id; }
 }

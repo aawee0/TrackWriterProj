@@ -14,7 +14,7 @@ public class GpsTrack {
 
 
     public GpsTrack(String name, ArrayList<GpsPoint> listOfPoints) {
-
+        trackName = name;
 
         // inserts a list of points into the track
         if (listOfPoints!=null) points = listOfPoints;
@@ -36,6 +36,10 @@ public class GpsTrack {
     public void addPoint (GpsPoint point) {
         points.add(point);
     }
+
+    public String getTrackName () {return trackName; }
+
+    public void setTrackName (String name) { trackName=name; }
 
     public int size () {
         return points.size();

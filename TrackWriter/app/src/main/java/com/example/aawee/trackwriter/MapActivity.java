@@ -3,8 +3,10 @@ package com.example.aawee.trackwriter;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.aawee.trackwriter.data.TrackContract;
@@ -19,10 +21,12 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
+    public static final int TRACK_DRAWING_WIDTH = 10;
 
     private TextView mDisplayText;
     private MapFragment mMapFragment;
@@ -69,7 +73,8 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             long ptDate = cursPt.getLong(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.CREATION_TIME_NAME));
             long pointID = cursPt.getLong(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry._ID));
 
-            GpsPoint newPt = new GpsPoint(ptLat, ptLon, ptDate, pointID);
+            GpsPoint newPt = new GpsPoint(ptLat, ptLon, ptDate);
+            newPt.setDbID(pointID);
             points.add(newPt);
         }
 
@@ -85,14 +90,29 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         if (points.size()!=0) {
             // build bounds for screen
             final LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            // array of point coordinates to hand to route-drawer
+            PolylineOptions lineOptions = new PolylineOptions();
 
             // create markers and extend bounds
             for (GpsPoint x: points) {
                 LatLng latLng = new LatLng(x.getLatitude(), x.getLongitude());
                 builder.include(latLng);
+                lineOptions.add(latLng);
                 googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker")
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
             }
+
+            lineOptions.width(TRACK_DRAWING_WIDTH);
+            lineOptions.color(Color.RED);
+
+            if(lineOptions != null) {
+                googleMap.addPolyline(lineOptions);
+            }
+            else {
+                Log.d("MAPnot","Track drawn without Polylines.");
+            }
+
+
 
             // set listener, so that camera changes only when map has undergone layout
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -118,6 +138,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private Cursor getPoints (long track) {
         return mainDB.query(TrackContract.GpsPointEntry.TABLE_NAME, null,
                 TrackContract.GpsPointEntry.TRACK_ID_NAME + "=" + Long.toString(track), null, null, null,
-                TrackContract.GpsPointEntry._ID);
+                TrackContract.GpsPointEntry.CREATION_TIME_NAME);
     }
 }

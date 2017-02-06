@@ -36,6 +36,11 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
         //else mDataSet=itemNames;
     }
 
+    public void updateData (Cursor cursor) {
+        mCursor = cursor;
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public TrackViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         // inflating
@@ -54,10 +59,11 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
     public void onBindViewHolder(TrackViewHolder holder, int position) {
         if(!mCursor.moveToPosition(position)) return;
 
+        long trID = mCursor.getLong(mCursor.getColumnIndex(TrackContract.GpsTrackEntry._ID));
         String name = mCursor.getString(mCursor.getColumnIndex(TrackContract.GpsTrackEntry.TRACK_NAME_NAME));
         Date date = new Date(mCursor.getLong(mCursor.getColumnIndex(TrackContract.GpsTrackEntry.CREATION_TIME_NAME)));
 
-        holder.listItemView.setText(name);
+        holder.listItemView.setText(name + " " + Long.toString(trID)); // adding ID for naming (on debugging stage)
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
