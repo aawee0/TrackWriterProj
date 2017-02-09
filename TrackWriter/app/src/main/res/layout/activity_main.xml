@@ -26,40 +26,44 @@
 
     </android.support.v7.widget.RecyclerView>
 
-    <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <TableLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/tableButtons"
         android:layout_alignParentBottom="true"
-        android:id="@+id/tableButtons">
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_horizontal">
 
-        <ImageButton
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inputType="textShortMessage"
+                android:text="Track name"
+                android:ems="9"
+                android:id="@+id/editText"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical"
+                />
+
+            <ImageButton
             android:src="@drawable/rec"
             android:background="@android:color/transparent"
             android:onClick="startRec"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/recButton"
-            android:layout_marginRight="20pt"
+            android:layout_marginLeft="10pt"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
              />
 
-            <ImageButton
-                android:src="@drawable/stop"
-                android:background="@android:color/transparent"
-                android:onClick="stopRec"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/stopButton"
-                android:layout_alignTop="@+id/recButton"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true" />
+
         </TableRow>
     </TableLayout>
 

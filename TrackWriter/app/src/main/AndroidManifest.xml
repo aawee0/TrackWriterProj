@@ -33,6 +33,9 @@
         <activity android:name=".MapActivity">
 
         </activity>
+        <activity android:name=".RecordActivity">
+
+        </activity>
     </application>
 
 </manifest>

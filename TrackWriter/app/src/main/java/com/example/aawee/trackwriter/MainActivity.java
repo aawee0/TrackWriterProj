@@ -1,20 +1,11 @@
 package com.example.aawee.trackwriter;
 
-import android.Manifest;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +14,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.aawee.trackwriter.data.KmlParser;
@@ -36,18 +27,12 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements TrackAdapter.ListItemClickListener {
 
     // interface elements
-    private ImageButton recBtn; // record button
-    private ImageButton stopBtn; // stop button
-    private boolean recStarted; // indicator that recording started
-    private GpsTrack curTrack; // current GPS track
     private TextView txtChg; // displaying text field
+    private EditText txtFld; // input field for new track name
+
     // list-related
     private TrackAdapter mAdapter;
     private RecyclerView mTrackList;
-
-    // location-related
-    private LocationManager locationManager;
-    private LocationListener locationListener;
 
     // database-related
     private SQLiteDatabase mainDB;
@@ -60,50 +45,16 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.List
         setContentView(R.layout.activity_main);
 
         // initialization
-        recBtn = (ImageButton) findViewById(R.id.recButton);
-        stopBtn = (ImageButton) findViewById(R.id.stopButton);
         txtChg = (TextView) findViewById(R.id.textView);
-        recStarted = false;
+        txtFld = (EditText) findViewById(R.id.editText);
 
         // action-bar
         //android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-
 
         // list-related
         mTrackList = (RecyclerView) findViewById(R.id.track_list);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         mTrackList.setLayoutManager(layoutManager);
-
-        // location-related
-        locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                if (recStarted) {
-                    curTrack.addPoint(new GpsPoint(location.getLatitude(), location.getLongitude(),
-                            location.getTime()));}
-
-                Log.d("GPSnot", "Coordinates (" + location.getLatitude() + ", " + location.getLatitude() + ") received.");
-
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-                Intent i = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(i);
-            }
-        };
 
         // database-related
         TrackDbHelper dbHelper = new TrackDbHelper(this);
@@ -119,48 +70,19 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.List
 
     }
 
-
-    void configureGPS() {
-        // check if permission is granted, otherwise request it
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, 10);
-                return;
-            }
-
-        // run the GPS location updates
-        locationManager.requestLocationUpdates("gps", 100, 5, locationListener); // add constants!
-    }
-
-
-
-
-    public void startRec(View view) {
-        // action for the record button
-        configureGPS();
-        curTrack = new GpsTrack("Test track", null); // choosing name is disabled for easier debugging
-        recStarted = true;
-        txtChg.setText("Recording. Press STOP to finish");
-    }
-
-    public void stopRec(View view) { // action for the stop button
-        insertTrack(curTrack);
+    @Override
+    public void onResume() {
+        super.onResume();
 
         cursTr = getTracks();
         mAdapter.updateData(cursTr);
+    }
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling ActivityCompat#requestPermissions
-            // PermissionCheck already called
-            // having this so the is no error below
-            return;
-        }
-        locationManager.removeUpdates(locationListener);
-
-        recStarted = false;
-        txtChg.setText("Finished. Press REC to start again");
+    public void startRec(View view) {
+        // action for the record button - open another screen with record activity
+        Intent recordIntent = new Intent(MainActivity.this, RecordActivity.class);
+        recordIntent.putExtra(Intent.EXTRA_TEXT, txtFld.getText().toString());
+        startActivity(recordIntent);
     }
 
     private void insertTrack (GpsTrack gpsTrack) {
@@ -193,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.List
         }
         catch (SQLException e) {
             // error
-            Log.e("DBerr", e.getStackTrace().toString() );
+            Log.e("DBerr", e.getMessage() );
         }
         finally {
             mainDB.endTransaction();
@@ -233,30 +155,15 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.List
     public boolean onOptionsItemSelected(MenuItem item){
         if (item.getItemId() == R.id.import_button) { // action for import button
             GpsTrack newTrack = KmlParser.parseOneTrackKml(this);
-            // received!
-            // insert it into list
-            insertTrack(newTrack);
 
+            // insert parsed track into list
+            insertTrack(newTrack);
+            // update the list
             cursTr = getTracks();
             mAdapter.updateData(cursTr);
-
-
         }
-
         return true;
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case 10:
-                // when permission for GPS is granted -- run "configureGPS" function
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    configureGPS();
-                }
-                break;
-            default:
-                break;
-        }
-    }
+
 }
