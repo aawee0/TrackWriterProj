@@ -26,9 +26,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.example.aawee.trackwriter.data.KmlParser;
 import com.example.aawee.trackwriter.data.TrackContract;
 import com.example.aawee.trackwriter.data.TrackDbHelper;
-import com.example.aawee.trackwriter.data.KmlParser;
 import com.example.aawee.trackwriter.data.testUtil;
 
 import java.util.ArrayList;
@@ -239,6 +239,8 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.List
 
             cursTr = getTracks();
             mAdapter.updateData(cursTr);
+
+
         }
 
         return true;
