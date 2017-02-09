@@ -63,7 +63,7 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
         String name = mCursor.getString(mCursor.getColumnIndex(TrackContract.GpsTrackEntry.TRACK_NAME_NAME));
         Date date = new Date(mCursor.getLong(mCursor.getColumnIndex(TrackContract.GpsTrackEntry.CREATION_TIME_NAME)));
 
-        holder.listItemView.setText(name + " " + Long.toString(trID)); // adding ID for naming (on debugging stage)
+        holder.listItemView.setText(name); // adding ID for naming (on debugging stage)
 
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 

@@ -7,7 +7,7 @@ package com.example.aawee.trackwriter;
 public class GpsPoint {
     private double latitude;
     private double longitude;
-    private long timeCreated; // time, when the point was received from GPS receiver
+    private long timeReceived; // time, when the point was received from GPS receiver
     private long dbID; // id in database, if needed
 
     public GpsPoint(double lat, double lon) {
@@ -22,7 +22,7 @@ public class GpsPoint {
         latitude = lat;
         longitude = lon;
 
-        timeCreated = date;
+        timeReceived = date;
     }
 
     public double getLatitude () {
@@ -33,7 +33,7 @@ public class GpsPoint {
         return longitude;
     }
 
-    public long getTimeCreated () { return timeCreated; }
+    public long getTimeCreated () { return timeReceived; }
 
     public void setDbID (long id) {dbID = id; }
 }

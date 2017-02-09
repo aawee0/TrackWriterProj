@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<Placemark>
+  <name>New York City</name>
+  <description>New York City</description>
+  <Point>
+    <coordinates>40.714172,-74.006393,0</coordinates>
+	<time>1486472083211</time>
+  </Point>
+  <Point>
+    <coordinates>40.718782,-74.009003,0</coordinates>
+    <time>1486472083525</time>
+  </Point>
+</Placemark>
+</Document>
+</kml>

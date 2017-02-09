@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<kml>
+<Document>
+<Placemark>
+<name>Random point track</name>
+<Point>
+<coordinates>-30.0,20.0,0</coordinates>
+<time>1486565942669</time>
+</Point>
+<Point>
+<coordinates>0.0,30.0,0</coordinates>
+<time>1486565942669</time>
+</Point>
+<Point>
+<coordinates>-10.0,40.0,0</coordinates>
+<time>1486565942669</time>
+</Point>
+</Placemark>
+</Document>
+</kml>
