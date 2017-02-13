@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_record"
     android:layout_width="match_parent"
@@ -13,7 +14,6 @@
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         android:name="com.google.android.gms.maps.MapFragment"
         android:id="@+id/record_map"
-        android:layout_above="@+id/stopButton"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
@@ -24,15 +24,20 @@
         android:text="Default Text"
         />
 
-    <ImageButton
-        android:src="@drawable/stop"
-        android:background="@android:color/transparent"
-        android:onClick="stopRec"
+
+    <android.support.design.widget.FloatingActionButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:onClick="stopRec"
+        android:clickable="true"
+        app:fabSize="normal"
+        app:srcCompat="@drawable/stop"
         android:id="@+id/stopButton"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        app:backgroundTint="@android:color/darker_gray"
+        android:layout_marginBottom="10pt"
+        />
 
 
 </RelativeLayout>

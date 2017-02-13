@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.example.aawee.trackwriter.data.TrackContract;
 import com.example.aawee.trackwriter.data.TrackDbHelper;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -93,8 +92,13 @@ public class RecordActivity extends AppCompatActivity implements OnMapReadyCallb
             public void onLocationChanged(Location location) {
 
                 // add received GPS point to the current track
-                curTrack.addPoint(new GpsPoint(location.getLatitude(), location.getLongitude(), location.getTime()));
-                Log.d("GPSnot", "Coordinates (" + location.getLatitude() + ", " + location.getLatitude() + ") received.");
+                curTrack.addPoint(new GpsPoint(location.getLatitude(), location.getLongitude(),
+                        location.getAccuracy(), location.getBearing(), location.getSpeed(), location.getTime()));
+
+                Log.d("GPSnot", "Coordinates (" + location.getLatitude() + ", " + location.getLatitude() + ") with accuracy " +
+                        location.getAccuracy() + " bearing " + location.getBearing() +
+                        " and speed " + location.getSpeed() + " received.");
+
 
                 // create marker on the map
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
@@ -109,12 +113,14 @@ public class RecordActivity extends AppCompatActivity implements OnMapReadyCallb
                     googleMap.addPolyline(polylineOptions);
                 }
 
-                // update screen bounds
-                builder.include(latLng);
-                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(builder.build(),100);
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
 
-                googleMap.animateCamera(cu);
-                googleMap.setOnCameraChangeListener(null);
+
+                // update screen bounds
+//                builder.include(latLng);
+//                CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(builder.build(),100);
+//                googleMap.animateCamera(cu);
+//                googleMap.setOnCameraChangeListener(null);
 
                 prevLatLng = latLng;
             }
@@ -204,6 +210,9 @@ public class RecordActivity extends AppCompatActivity implements OnMapReadyCallb
                     cv.put(TrackContract.GpsPointEntry.CREATION_TIME_NAME, pt.getTimeCreated());
                     cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, pt.getLatitude());
                     cv.put(TrackContract.GpsPointEntry.LONGITUDE_NAME, pt.getLongitude());
+                    cv.put(TrackContract.GpsPointEntry.ACCURACY_NAME, pt.getAccuracy());
+                    cv.put(TrackContract.GpsPointEntry.BEARING_NAME, pt.getBearing());
+                    cv.put(TrackContract.GpsPointEntry.SPEED_NAME, pt.getSpeed());
                     mainDB.insert(TrackContract.GpsPointEntry.TABLE_NAME, null, cv);
                 }
             }

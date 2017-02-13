@@ -55,6 +55,9 @@ public class testUtil {
         cv.put(TrackContract.GpsPointEntry.CREATION_TIME_NAME, (new java.util.Date().getTime()));
         cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, -30);
         cv.put(TrackContract.GpsPointEntry.LONGITUDE_NAME, 20);
+        cv.put(TrackContract.GpsPointEntry.ACCURACY_NAME, 20.0);
+        cv.put(TrackContract.GpsPointEntry.BEARING_NAME, 0.0);
+        cv.put(TrackContract.GpsPointEntry.SPEED_NAME, 0.0);
         list.add(cv);
 
         cv = new ContentValues();
@@ -63,6 +66,9 @@ public class testUtil {
         cv.put(TrackContract.GpsPointEntry.CREATION_TIME_NAME, (new java.util.Date().getTime()));
         cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, 0);
         cv.put(TrackContract.GpsPointEntry.LONGITUDE_NAME, 30);
+        cv.put(TrackContract.GpsPointEntry.ACCURACY_NAME, 20.0);
+        cv.put(TrackContract.GpsPointEntry.BEARING_NAME, 0.0);
+        cv.put(TrackContract.GpsPointEntry.SPEED_NAME, 0.0);
         list.add(cv);
 
         cv = new ContentValues();
@@ -71,6 +77,9 @@ public class testUtil {
         cv.put(TrackContract.GpsPointEntry.CREATION_TIME_NAME, (new java.util.Date().getTime()));
         cv.put(TrackContract.GpsPointEntry.LATITUDE_NAME, -10);
         cv.put(TrackContract.GpsPointEntry.LONGITUDE_NAME, 40);
+        cv.put(TrackContract.GpsPointEntry.ACCURACY_NAME, 20.0);
+        cv.put(TrackContract.GpsPointEntry.BEARING_NAME, 0.0);
+        cv.put(TrackContract.GpsPointEntry.SPEED_NAME, 0.0);
         list.add(cv);
 
 

@@ -6,10 +6,16 @@
   <description>New York City</description>
   <Point>
     <coordinates>40.714172,-74.006393,0</coordinates>
+    <accuracy>20.0</accuracy>
+    <bearing>0.0</bearing>
+    <speed>0.0</speed>
 	<time>1486472083211</time>
   </Point>
   <Point>
     <coordinates>40.718782,-74.009003,0</coordinates>
+    <accuracy>22.0</accuracy>
+    <bearing>5.0</bearing>
+    <speed>1.0</speed>
     <time>1486472083525</time>
   </Point>
 </Placemark>

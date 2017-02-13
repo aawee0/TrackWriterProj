@@ -88,10 +88,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             //testTrackID = cursPt.getInt(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.TRACK_ID_NAME));
             double ptLat = Double.parseDouble(cursPt.getString(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.LATITUDE_NAME)));
             double ptLon = Double.parseDouble(cursPt.getString(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.LONGITUDE_NAME)));
+            double ptAcc = Double.parseDouble(cursPt.getString(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.ACCURACY_NAME)));
+            double ptBrg = Double.parseDouble(cursPt.getString(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.BEARING_NAME)));
+            double ptSpd = Double.parseDouble(cursPt.getString(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.SPEED_NAME)));
             long ptDate = cursPt.getLong(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry.CREATION_TIME_NAME));
             long pointID = cursPt.getLong(cursPt.getColumnIndexOrThrow(TrackContract.GpsPointEntry._ID));
 
-            GpsPoint newPt = new GpsPoint(ptLat, ptLon, ptDate);
+            GpsPoint newPt = new GpsPoint(ptLat, ptLon, ptAcc, ptBrg, ptSpd, ptDate);
             newPt.setDbID(pointID);
             points.add(newPt);
         }
@@ -203,10 +206,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             googleMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
                 @Override
                 public void onCameraChange(CameraPosition cameraPosition) {
-                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(builder.build(),100);
+                    try {
+                        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(builder.build(), 100);
 
-                    googleMap.animateCamera(cu);
-                    googleMap.setOnCameraChangeListener(null);
+                        googleMap.animateCamera(cu);
+                        googleMap.setOnCameraChangeListener(null);
+                    }
+                    catch (Error e) {
+                        Log.e("MAPerr", e.getMessage());
+                    }
                 }
             });
 

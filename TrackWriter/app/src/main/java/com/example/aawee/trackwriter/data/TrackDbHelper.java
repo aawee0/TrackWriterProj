@@ -12,7 +12,7 @@ public class TrackDbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "tracks.db";
 
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     public TrackDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -32,9 +32,12 @@ public class TrackDbHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_POINT_TABLE = "CREATE TABLE " + TrackContract.GpsPointEntry.TABLE_NAME +
                 " (" + TrackContract.GpsPointEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                 TrackContract.GpsPointEntry.TRACK_ID_NAME + " INTEGER NOT NULL, " +
-                TrackContract.GpsPointEntry.CREATION_TIME_NAME + " LONG NOT NULL, " +
                 TrackContract.GpsPointEntry.LATITUDE_NAME + " REAL NOT NULL, " +
                 TrackContract.GpsPointEntry.LONGITUDE_NAME + " REAL NOT NULL, " +
+                TrackContract.GpsPointEntry.ACCURACY_NAME + " REAL NOT NULL, " +
+                TrackContract.GpsPointEntry.BEARING_NAME + " REAL NOT NULL, " +
+                TrackContract.GpsPointEntry.SPEED_NAME + " REAL NOT NULL, " +
+                TrackContract.GpsPointEntry.CREATION_TIME_NAME + " LONG NOT NULL, " +
                 " FOREIGN KEY (" + TrackContract.GpsPointEntry.TRACK_ID_NAME +
                 ") REFERENCES " + TrackContract.GpsTrackEntry.TABLE_NAME + "(" + TrackContract.GpsTrackEntry._ID + ") );";
 

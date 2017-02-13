@@ -12,9 +12,15 @@ public class TrackContract {
         public static final String TABLE_NAME = "gps_point_table";
 
         public static final String TRACK_ID_NAME = "track_id";
-        public static final String CREATION_TIME_NAME = "time";
+
         public static final String LATITUDE_NAME = "latitude";
         public static final String LONGITUDE_NAME = "longitude";
+
+        public static final String ACCURACY_NAME = "accuracy";
+        public static final String BEARING_NAME = "bearing";
+        public static final String SPEED_NAME = "speed";
+
+        public static final String CREATION_TIME_NAME = "time";
     }
 
     public static final class GpsTrackEntry implements BaseColumns{

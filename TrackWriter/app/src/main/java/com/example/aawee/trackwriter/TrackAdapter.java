@@ -20,14 +20,11 @@ import java.util.Date;
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHolder> {
 
     //private List<String> mDataSet;
-
-    private Context mContext;
     private Cursor mCursor;
 
     final private ListItemClickListener mOnClickListener;
 
-    public TrackAdapter(Context context, Cursor cursor, ListItemClickListener listener) {
-        mContext = context;
+    public TrackAdapter(Cursor cursor, ListItemClickListener listener) {
         mCursor = cursor;
 
         mOnClickListener = listener;

@@ -30,14 +30,16 @@ public class KmlParser {
 
 
 
-    public static GpsTrack parseOneTrackKml(Context context) {
+    public static GpsTrack parseOneTrackKml(Context context, android.net.Uri filedir) {
         // list of points that we'll be filling
         ArrayList<GpsPoint> listPts = new ArrayList<GpsPoint>();
         String trackName = "New track"; // will be changed if parse is successful
 
         try {
             // open file and parse it
-            InputStream is = context.getAssets().open("testdata.kml");
+            //InputStream is = context.getAssets().open("testdata.kml");
+            InputStream is = context.getContentResolver().openInputStream(filedir);
+            //InputStream is = new FileInputStream(filedir);
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(is);
@@ -62,9 +64,13 @@ public class KmlParser {
                     double lat = Double.parseDouble(coordspt[0]);
                     double lon = Double.parseDouble(coordspt[1]);
 
+                    double acc = Double.valueOf( point.getElementsByTagName("accuracy").item(0).getTextContent() );
+                    double brg = Double.valueOf( point.getElementsByTagName("bearing").item(0).getTextContent() );
+                    double spd = Double.valueOf( point.getElementsByTagName("speed").item(0).getTextContent() );
+
                     // get time of the receiving location
                     long timeCrt = Long.valueOf( point.getElementsByTagName("time").item(0).getTextContent() );
-                    GpsPoint gpsPoint = new GpsPoint(lat,lon, timeCrt);
+                    GpsPoint gpsPoint = new GpsPoint(lat,lon, acc, brg, spd, timeCrt);
                     listPts.add(gpsPoint);
                 }
 
@@ -112,6 +118,20 @@ public class KmlParser {
                 serializer.text(Double.toString(pt.getLatitude()) + "," + Double.toString(pt.getLongitude()) + "," + 0);
                 serializer.endTag("", "coordinates");
                 serializer.text("\n");
+
+                serializer.startTag("", "accuracy");
+                serializer.text(Double.toString(pt.getAccuracy()));
+                serializer.endTag("", "accuracy");
+                serializer.text("\n");
+                serializer.startTag("", "bearing");
+                serializer.text(Double.toString(pt.getBearing()));
+                serializer.endTag("", "bearing");
+                serializer.text("\n");
+                serializer.startTag("", "speed");
+                serializer.text(Double.toString(pt.getSpeed()));
+                serializer.endTag("", "speed");
+                serializer.text("\n");
+
                 serializer.startTag("", "time");
                 serializer.text(Long.toString(pt.getTimeCreated()));
                 serializer.endTag("", "time");
