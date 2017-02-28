@@ -95,14 +95,15 @@ public class RecordActivity extends AppCompatActivity implements OnMapReadyCallb
                 curTrack.addPoint(new GpsPoint(location.getLatitude(), location.getLongitude(),
                         location.getAccuracy(), location.getBearing(), location.getSpeed(), location.getTime()));
 
-                Log.d("GPSnot", "Coordinates (" + location.getLatitude() + ", " + location.getLatitude() + ") with accuracy " +
+                Log.d("GPSnot", "Coordinates (" + location.getLatitude() + ", " + location.getLongitude() + ") with accuracy " +
                         location.getAccuracy() + " bearing " + location.getBearing() +
                         " and speed " + location.getSpeed() + " received.");
 
 
                 // create marker on the map
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                googleMap.addMarker(new MarkerOptions().position(latLng).title("Marker")
+                googleMap.addMarker(new MarkerOptions().position(latLng).title(Double.toString(location.getLatitude()) + ","
+                        + Double.toString(location.getLongitude()))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 
                 // draw line between current and previous point
@@ -214,6 +215,8 @@ public class RecordActivity extends AppCompatActivity implements OnMapReadyCallb
                     cv.put(TrackContract.GpsPointEntry.BEARING_NAME, pt.getBearing());
                     cv.put(TrackContract.GpsPointEntry.SPEED_NAME, pt.getSpeed());
                     mainDB.insert(TrackContract.GpsPointEntry.TABLE_NAME, null, cv);
+
+                    Log.d("GPSnot", "Coords: " + Double.toString(pt.getLongitude()) );
                 }
             }
             else Log.d("DBnot", "The track named " + gpsTrack.getTrackName() + " is empty.");

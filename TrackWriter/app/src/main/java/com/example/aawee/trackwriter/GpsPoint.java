@@ -13,20 +13,9 @@ public class GpsPoint {
     private long timeReceived; // time, when the point was received from GPS receiver
     private long dbID; // id in database, if needed
 
-    public GpsPoint(double lat, double lon) {
-        latitude = lat;
-        longitude = lon;
+    private boolean filtered;
+    private double bearingAct;
 
-        // put the time when created
-        // timeCreated = new Date();
-    }
-
-    public GpsPoint(double lat, double lon, long date) {
-        latitude = lat;
-        longitude = lon;
-
-        timeReceived = date;
-    }
 
     public GpsPoint(double lat, double lon, double acc, double brg, double spd, long date) {
         latitude = lat;
@@ -37,6 +26,9 @@ public class GpsPoint {
         speed = spd;
 
         timeReceived = date;
+        filtered = false;
+
+        bearingAct = 0.0;
     }
 
     public double getLatitude () {
@@ -53,7 +45,15 @@ public class GpsPoint {
 
     public double getSpeed () { return speed; }
 
+    public boolean isFiltered () {return filtered; }
+
     public long getTimeCreated () { return timeReceived; }
 
     public void setDbID (long id) {dbID = id; }
+
+    public void setFiltered () {filtered=true; }
+
+    public void setBearingAct (double brgA) {bearingAct = brgA; }
+
+    public double getBearingAct () {return bearingAct; }
 }

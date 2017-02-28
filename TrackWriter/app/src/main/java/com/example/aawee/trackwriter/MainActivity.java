@@ -162,7 +162,18 @@ public class MainActivity extends AppCompatActivity implements TrackAdapter.List
     }
 
     public boolean onOptionsItemSelected(MenuItem item){
-        if (item.getItemId() == R.id.import_button) { // action for import button
+
+        // read from txt in the project
+        if (false) {
+            GpsTrack newTr = KmlParser.readFromTxt(this);
+            insertTrack(newTr);
+            cursTr = getTracks();
+            mAdapter.updateData(cursTr);
+        }
+
+        // read from selected file
+        if (true) {
+        //if (item.getItemId() == R.id.import_button) { // action for import button
 
             Intent intent;
             intent = new Intent(Intent.ACTION_GET_CONTENT);
